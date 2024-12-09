@@ -1,0 +1,30 @@
+version: '3.9'
+
+services:
+  postgres:
+    image: postgres
+    restart: always
+    container_name: my_postgres
+    environment:
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  bot:
+    restart: always
+    build:
+      context: .
+    container_name: telegram_bot
+    environment:
+      BOT_TOKEN: ${BOT_TOKEN}
+      ADMIN: ${ADMIN}
+      DATABASE_URL: ${DATABASE_URL}
+    depends_on:
+      - postgres
+
+volumes:
+  postgres_data:
